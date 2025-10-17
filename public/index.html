@@ -1,0 +1,65 @@
+index.html:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book List API</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body class="bg-cover bg-center min-h-screen" style="background-image: url('./assets/images/library.jpg')">
+  <main class="bg-black/60 min-h-screen px-6 py-10 flex flex-col justify-between">
+    
+    <!-- Header -->
+    <header class="text-center mb-10">
+      <h1 class="text-4xl font-bold mb-2">📚 My Book List</h1>
+      <p class="text-lg text-white">Manage your personal library. Add, edit, and explore your books with ease.</p>
+    </header>
+
+    <!-- Controls -->
+    <section class="bg-white/10 p-6 rounded-lg border border-double-white/20 mb-10">
+      <div class="flex flex-wrap gap-4 justify-center mb-6">
+        <button class="bg-[#f5f0e6] text-black font-semibold px-6 py-2 rounded hover:bg-[#eae4d8] transition">Add Book</button>
+        <button class="bg-[#f5f0e6] text-black font-semibold px-6 py-2 rounded hover:bg-[#eae4d8] transition">Edit Book</button>
+        <button class="bg-[#f5f0e6] text-black font-semibold px-6 py-2 rounded hover:bg-[#eae4d8] transition">Delete Book</button>
+        <a href="/api/books" class="bg-[#f5f0e6] text-black font-semibold px-6 py-2 rounded hover:bg-[#eae4d8] transition">View Book List (JSON)</a>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <label for="range" class="block text-white font-medium mb-2">Number of Books to Display: <span id="range-value" class="font-bold">10</span></label>
+          <input type="range" id="range" name="range" min="1" max="100" value="10" class="w-full">
+        </div>
+        <div>
+          <label for="sort" class="block text-white font-medium mb-2">Sort Books</label>
+          <select id="sort" name="sort" class="w-full p-2 rounded border border-double-gray-300 text-black">
+            <option value="title-asc">Title (A-Z)</option>
+            <option value="title-desc">Title (Z-A)</option>
+            <option value="author-asc">Author (A-Z)</option>
+            <option value="author-desc">Author (Z-A)</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Book List -->
+    <section class="bg-white/10 p-6 rounded-lg border border-double-white/20 mb-10 overflow-y-auto max-h-64">
+      <h2 class="text-2xl font-semibold mb-4">📖 Your Books</h2>
+      <ul id="book-list" class="space-y-2">
+        <!-- Dynamic book items will go here -->
+        <li class="bg-white/20 p-3 rounded">Example Book: <span class="italic">Author Name</span></li>
+      </ul>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center text-sm text-white/70 mt-auto">
+      &copy; 2025 My Book List API. All rights reserved.
+    </footer>
+  </main>
+</body>
+<script src="index.js"></script>
+</html>
+
+
+
