@@ -27,6 +27,11 @@ router.put('/books/:id', updateBook);
 // Delete a book by ID
 router.delete('/books/:id', deleteBook);
 
+//add genre, publishedYear, rating filtering to the book model
+
+router.get('/books/genre/:genre', getBooksByGenre);
+router.get('/books/publishedYear/:year', getBooksByPublishedYear);
+router.get('/books/rating/:rating', getBooksByRating);
 
 module.exports = router;
 
