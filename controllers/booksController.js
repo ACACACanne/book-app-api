@@ -1,18 +1,10 @@
 const Book = require('../models/Book');
 
-// In-memory book data for testing purposes only  
-
-let books = [
-  { id: 1, title: '1984', author: 'George Orwell', read: true },
-  { id: 2, title: 'To Kill a Mockingbird', author: 'Harper Lee', read: false },
-];
-
 exports.getAllBooks = async (req, res) => {
   try {
-    const books = await Book.find();  
+    const books = await Book.find();
     res.json(books);
   } catch (error) {
-    console.error('Error fetching books:', error);
     res.status(500).send('Internal Server Error');
   }
 };
@@ -22,7 +14,6 @@ exports.getBookById = async (req, res) => {
     const book = await Book.findById(req.params.id);
     book ? res.json(book) : res.status(404).send('Book not found');
   } catch (error) {
-    console.error('Error fetching book by ID:', error);
     res.status(500).send('Internal Server Error');
   }
 };
@@ -33,7 +24,6 @@ exports.getBooksByAuthor = async (req, res) => {
     const filtered = await Book.find({ author }).exec();
     res.json(filtered);
   } catch (error) {
-    console.error('Error fetching books by author:', error);
     res.status(500).send('Internal Server Error');
   }
 };
@@ -44,57 +34,6 @@ exports.getBooksByTitle = async (req, res) => {
     const filtered = await Book.find({ title: { $regex: title, $options: 'i' } }).exec();
     res.json(filtered);
   } catch (error) {
-    console.error('Error fetching books by title:', error);
-    res.status(500).send('Internal Server Error');
-  }
-};
-
-exports.addBook = async (req, res) => {
-  try {
-    const newBook = new Book(req.body);
-    const savedBook = await newBook.save();
-    res.status(201).json(savedBook);
-  } catch (error) {
-    console.error('Error adding book:', error);
-    res.status(500).send('Internal Server Error');
-  }
-};
-exports.updateBook = async (req, res) => {
-  try {
-    const updatedBook = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    updatedBook ? res.json(updatedBook) : res.status(404).send('Book not found');
-  } catch (error) {
-    console.error('Error updating book:', error);
-    res.status(500).send('Internal Server Error');
-  } 
-};
-
-exports.deleteBook = async (req, res) => {
-  try {
-    const deletedBook = await Book.findByIdAndDelete(req.params.id);
-    deletedBook ? res.status(204).send() : res.status(404).send('Book not found');
-  } catch (error) {
-    console.error('Error deleting book:', error);
-    res.status(500).send('Internal Server Error');
-  }
-};
-exports.updateBook = async (req, res) => {
-  try {
-    const bookId = parseInt(req.params.id);
-    const updatedBook = await Book.findByIdAndUpdate(bookId, req.body, { new: true });
-    updatedBook ? res.json(updatedBook) : res.status(404).send('Book not found');
-  } catch (error) {
-    console.error('Error updating book:', error);
-    res.status(500).send('Internal Server Error');
-  }
-};
-
-exports.deleteBook = async (req, res) => {
-  try {
-    const deletedBook = await Book.findByIdAndDelete(req.params.id);
-    deletedBook ? res.status(204).send() : res.status(404).send('Book not found');
-  } catch (error) {
-    console.error('Error deleting book:', error);
     res.status(500).send('Internal Server Error');
   }
 };
@@ -105,7 +44,6 @@ exports.getBooksByGenre = async (req, res) => {
     const filtered = await Book.find({ genre }).exec();
     res.json(filtered);
   } catch (error) {
-    console.error('Error fetching books by genre:', error);
     res.status(500).send('Internal Server Error');
   }
 };
@@ -116,7 +54,6 @@ exports.getBooksByPublishedYear = async (req, res) => {
     const filtered = await Book.find({ publishedYear: year }).exec();
     res.json(filtered);
   } catch (error) {
-    console.error('Error fetching books by published year:', error);
     res.status(500).send('Internal Server Error');
   }
 };
@@ -127,7 +64,58 @@ exports.getBooksByRating = async (req, res) => {
     const filtered = await Book.find({ rating }).exec();
     res.json(filtered);
   } catch (error) {
-    console.error('Error fetching books by rating:', error);
     res.status(500).send('Internal Server Error');
   }
 };
+
+exports.addBook = async (req, res) => {
+  try {
+    const newBook = new Book(req.body);
+    const savedBook = await newBook.save();
+    res.status(201).json(savedBook);
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+exports.updateBook = async (req, res) => {
+  try {
+    const updatedBook = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    updatedBook ? res.json(updatedBook) : res.status(404).send('Book not found');
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+exports.deleteBook = async (req, res) => {
+  try {
+    const deletedBook = await Book.findByIdAndDelete(req.params.id);
+    deletedBook ? res.status(204).send() : res.status(404).send('Book not found');
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+exports.updateBookRating = async (req, res) => {
+  try {
+    const { rating } = req.body;
+    const updatedBook = await Book.findByIdAndUpdate(req.params.id, { rating }, { new: true });
+    updatedBook ? res.json(updatedBook) : res.status(404).send('Book not found');
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+exports.updateBookReadStatus = async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (!book) return res.status(404).send('Book not found');
+    book.read = !book.read;
+    await book.save();
+    res.json(book);
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+
