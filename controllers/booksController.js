@@ -99,3 +99,35 @@ exports.deleteBook = async (req, res) => {
   }
 };
 
+exports.getBooksByGenre = async (req, res) => {
+  try {
+    const genre = req.params.genre.toLowerCase();
+    const filtered = await Book.find({ genre }).exec();
+    res.json(filtered);
+  } catch (error) {
+    console.error('Error fetching books by genre:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+exports.getBooksByPublishedYear = async (req, res) => {
+  try {
+    const year = parseInt(req.params.year);
+    const filtered = await Book.find({ publishedYear: year }).exec();
+    res.json(filtered);
+  } catch (error) {
+    console.error('Error fetching books by published year:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+exports.getBooksByRating = async (req, res) => {
+  try {
+    const rating = parseFloat(req.params.rating);
+    const filtered = await Book.find({ rating }).exec();
+    res.json(filtered);
+  } catch (error) {
+    console.error('Error fetching books by rating:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
