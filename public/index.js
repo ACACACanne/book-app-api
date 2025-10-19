@@ -2,25 +2,32 @@ let allBooks = [];
 let currentEditId = null;
 let currentDeleteId = null;
 
-// Modal logic
+// Modal elements
 const addModal = document.getElementById('add-modal');
 const editModal = document.getElementById('edit-modal');
 const deleteModal = document.getElementById('delete-modal');
 
+// Open Add Modal
 document.getElementById('open-add-modal').addEventListener('click', () => {
-  addModal.style.display = 'flex';
+  addModal.classList.remove('hidden');
 });
 
+// Close Modals
 document.getElementById('close-add-modal').addEventListener('click', () => {
-  addModal.style.display = 'none';
+  addModal.classList.add('hidden');
+});
+document.getElementById('close-edit-modal')?.addEventListener('click', () => {
+  editModal.classList.add('hidden');
+});
+document.getElementById('close-delete-modal')?.addEventListener('click', () => {
+  deleteModal.classList.add('hidden');
 });
 
-document.getElementById('close-edit-modal').addEventListener('click', () => {
-  editModal.style.display = 'none';
-});
-
-document.getElementById('close-delete-modal').addEventListener('click', () => {
-  deleteModal.style.display = 'none';
+// View Book List
+document.getElementById('view-book-list').addEventListener('click', () => {
+  document.getElementById('book-list-section').classList.remove('hidden');
+  document.getElementById('controls').classList.remove('hidden');
+  loadBooks();
 });
 
 // Add Book
@@ -33,12 +40,12 @@ document.getElementById('add-book-form').addEventListener('submit', async (e) =>
     author: form.author.value,
     genre: form.genre.value,
     publishedYear: parseInt(form.publishedYear.value),
-    rating: parseInt(form.rating.value),
+    rating: 0,
     coverImageUrl: form.coverImageUrl.value,
     purchaseLink: form.purchaseLink.value,
     readOnlineLink: form.readOnlineLink.value,
     read: form.read.checked,
-    summary: form.summary.value,
+    summary: form.summary.value
   };
 
   await fetch('/api/books', {
@@ -48,15 +55,8 @@ document.getElementById('add-book-form').addEventListener('submit', async (e) =>
   });
 
   form.reset();
-  addModal.style.display = 'none';
+  addModal.classList.add('hidden');
   await loadBooks();
-});
-
-// View Book List
-document.getElementById('view-book-list').addEventListener('click', () => {
-  document.getElementById('book-list-section').style.display = 'block';
-  document.getElementById('controls').style.display = 'grid';
-  loadBooks();
 });
 
 // Load Books
@@ -65,8 +65,6 @@ async function loadBooks() {
   allBooks = await res.json();
   renderBooks();
 }
-
-
 
 // Render Books
 function renderBooks() {
@@ -100,7 +98,7 @@ function renderBooks() {
     li.className = 'bg-white/10 p-4 rounded shadow';
 
     li.innerHTML = `
-      <div class="flex gap-4 items-start">
+      <div class="flex flex-col md:flex-row gap-4 items-start">
         <img src="${book.coverImageUrl || './default-cover.jpg'}" alt="Cover of ${book.title}" class="w-24 h-auto rounded shadow" />
         <div class="flex-1">
           <strong>Title:</strong> ${book.title}<br>
@@ -164,18 +162,18 @@ function openEditModal(book) {
   form.read.checked = book.read;
   form.rating.value = book.rating || 0;
   form.summary.value = book.summary || '';
-  editModal.style.display = 'flex';
+  editModal.classList.remove('hidden');
 }
 
 // Open Delete Modal
 function openDeleteModal(book) {
   currentDeleteId = book._id;
   document.getElementById('delete-title').textContent = book.title;
-  deleteModal.style.display = 'flex';
+  deleteModal.classList.remove('hidden');
 }
 
-// 📝 Submit Edit Form
-document.getElementById('edit-book-form').addEventListener('submit', async (e) => {
+// Submit Edit Form
+document.getElementById('edit-book-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const form = e.target;
 
@@ -198,28 +196,21 @@ document.getElementById('edit-book-form').addEventListener('submit', async (e) =
     body: JSON.stringify(updatedBook)
   });
 
-  editModal.style.display = 'none';
+  editModal.classList.add('hidden');
   await loadBooks();
 });
 
 // Confirm Delete
-document.getElementById('confirm-delete').addEventListener('click', async () => {
+document.getElementById('confirm-delete')?.addEventListener('click', async () => {
   await fetch(`/api/books/${currentDeleteId}`, {
     method: 'DELETE'
   });
 
-  deleteModal.style.display = 'none';
+  deleteModal.classList.add('hidden');
   await loadBooks();
 });
-
 
 // Sort and Range Listeners
 document.getElementById('sort').addEventListener('change', renderBooks);
 document.getElementById('range').addEventListener('input', renderBooks);
-
-
-
-
-
-
 

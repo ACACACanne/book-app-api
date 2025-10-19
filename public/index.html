@@ -25,7 +25,7 @@
       <div id="controls" class="grid md:grid-cols-2 gap-6 hidden">
         <div>
           <label for="range" class="block text-white font-medium mb-2">Number of Books to Display: <span id="range-value" class="font-bold">20</span></label>
-          <input type="range" id="range" name="range" min="1" max="100" value="20" class="w-full">
+          <input type="range" id="range" name="range" min="1" max="300" value="20" class="w-full">
         </div>
         <div>
           <label for="sort" class="block text-white font-medium mb-2">Sort Books</label>
@@ -42,7 +42,6 @@
             <option value="unread-status">Unread Status</option>
             <option value="genre-asc">Genre (A-Z)</option>
             <option value="genre-desc">Genre (Z-A)</option>
-            <option value="wishlist-status">Wish List Only</option>
           </select>
         </div>
       </div>
@@ -66,44 +65,13 @@
           <input type="number" name="publishedYear" placeholder="Published Year" class="p-2 rounded border" />
           <input type="url" name="coverImageUrl" placeholder="Cover Image URL" class="p-2 rounded border" />
           <input type="url" name="purchaseLink" placeholder="Purchase Link (optional)" class="p-2 rounded border" />
-          <input type="url" name="readOnlineUrl" placeholder="Read Online URL (optional)" class="p-2 rounded border" />
+          <input type="url" name="readOnlineLink" placeholder="Read Online URL (optional)" class="p-2 rounded border" />
+          <input type="text" name="summary" placeholder="Summary (optional)" class="p-2 rounded border md:col-span-2" />
           <label class="md:col-span-2 flex items-center gap-2">
             <input type="checkbox" name="read" /> Mark as Read
           </label>
           <button type="submit" class="md:col-span-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Add Book</button>
         </form>
-      </div>
-    </div>
-
-    <!-- Edit Book Modal -->
-    <div id="edit-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
-      <div class="bg-white text-black rounded-lg p-6 w-full max-w-xl shadow-lg relative">
-        <button id="close-edit-modal" class="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black">&times;</button>
-        <h2 class="text-2xl font-semibold mb-4">Edit Book</h2>
-        <form id="edit-book-form" class="grid md:grid-cols-2 gap-4">
-          <input type="hidden" name="id" />
-          <input type="text" name="title" placeholder="Title" required class="p-2 rounded border" />
-          <input type="text" name="author" placeholder="Author" required class="p-2 rounded border" />
-          <input type="text" name="genre" placeholder="Genre" class="p-2 rounded border" />
-          <input type="number" name="publishedYear" placeholder="Published Year" class="p-2 rounded border" />
-          <input type="url" name="coverImageUrl" placeholder="Cover Image URL" class="p-2 rounded border" />
-          <input type="url" name="purchaseLink" placeholder="Purchase Link (optional)" class="p-2 rounded border" />
-          <input type="url" name="readOnlineUrl" placeholder="Read Online URL (optional)" class="p-2 rounded border" />
-          <label class="md:col-span-2 flex items-center gap-2">
-            <input type="checkbox" name="read" /> Mark as Read
-          </label>
-          <button type="submit" class="md:col-span-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Update Book</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Delete Book Modal -->
-    <div id="delete-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
-      <div class="bg-white text-black rounded-lg p-6 w-full max-w-md shadow-lg relative text-center">
-        <button id="close-delete-modal" class="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black">&times;</button>
-        <h2 class="text-2xl font-semibold mb-4"> Delete Book</h2>
-        <p class="mb-6">Are you sure you want to delete <strong id="delete-title"></strong>?</p>
-        <button id="confirm-delete" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Yes, Delete</button>
       </div>
     </div>
 
@@ -115,11 +83,4 @@
   <script src="index.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
 
