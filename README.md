@@ -18,6 +18,7 @@ Features
 - Background image and themed styling
 - Link to purchase 
 - Link to read Online
+- Summary of the book
 
 ----------------------------------------------------------------------------------------
 
