@@ -97,10 +97,22 @@ exports.deleteBook = async (req, res) => {
 };
 
 exports.updateBookRating = async (req, res) => {
+  const { rating } = req.body;
+
+  // ✅ Add validation here
+  if (rating < 0 || rating > 5) {
+    return res.status(400).send('Rating must be between 0 and 5');
+  }
+
   try {
-    const { rating } = req.body;
-    const updatedBook = await Book.findByIdAndUpdate(req.params.id, { rating }, { new: true });
-    updatedBook ? res.json(updatedBook) : res.status(404).send('Book not found');
+    const updatedBook = await Book.findByIdAndUpdate(
+      req.params.id,
+      { rating },
+      { new: true }
+    );
+    updatedBook
+      ? res.json(updatedBook)
+      : res.status(404).send('Book not found');
   } catch (error) {
     res.status(500).send('Internal Server Error');
   }
