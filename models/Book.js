@@ -9,7 +9,8 @@ const bookSchema = new mongoose.Schema({
   read: { type: Boolean, default: false },
   coverImageUrl: { type: String, default: '' },
   purchaseLink: { type: String, default: '' },
-  readOnlineLink: { type: String, default: '' }
+  readOnlineLink: { type: String, default: '' },
+  summary: { type: String, default: '' }
 });
 
 module.exports = mongoose.model('Book', bookSchema);

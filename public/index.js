@@ -36,8 +36,9 @@ document.getElementById('add-book-form').addEventListener('submit', async (e) =>
     rating: parseInt(form.rating.value),
     coverImageUrl: form.coverImageUrl.value,
     purchaseLink: form.purchaseLink.value,
-    readOnlineUrl: form.readOnlineUrl.value,
-    read: form.read.checked
+    readOnlineLink: form.readOnlineLink.value,
+    read: form.read.checked,
+    summary: form.summary.value
   };
 
   await fetch('/api/books', {
@@ -119,6 +120,10 @@ function renderBooks() {
           </div>
           <button onclick="toggleReadStatus('${book._id}')" class="mt-2 bg-black text-white px-3 py-1 rounded hover:bg-gray-800 transition">ChangeRead Status</button>
         </div>
+        <div class="md:w-1/2 w-full bg-white/10 p-3 rounded text-sm text-white border border-white/20">
+          <h3 class="font-semibold">Summary:</h3>
+          <p>${book.summary || 'No summary available.'}</p>
+        </div>
       </div>
     `;
     list.appendChild(li);
@@ -155,6 +160,8 @@ function openEditModal(book) {
   form.purchaseLink.value = book.purchaseLink || '';
   form.readOnlineLink.value = book.readOnlineLink || '';
   form.read.checked = book.read;
+  form.rating.value = book.rating || 0;
+  form.summary.value = book.summary || '';
   editModal.style.display = 'flex';
 }
 
@@ -178,7 +185,9 @@ document.getElementById('edit-book-form').addEventListener('submit', async (e) =
     coverImageUrl: form.coverImageUrl.value,
     purchaseLink: form.purchaseLink.value,
     readOnlineLink: form.readOnlineLink.value,
-    read: form.read.checked
+    read: form.read.checked,
+    rating: parseInt(form.rating.value),
+    summary: form.summary.value
   };
 
   await fetch(`/api/books/${currentEditId}`, {
