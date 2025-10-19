@@ -38,7 +38,7 @@ document.getElementById('add-book-form').addEventListener('submit', async (e) =>
     purchaseLink: form.purchaseLink.value,
     readOnlineLink: form.readOnlineLink.value,
     read: form.read.checked,
-    summary: form.summary.value
+    summary: form.summary.value,
   };
 
   await fetch('/api/books', {
@@ -65,6 +65,8 @@ async function loadBooks() {
   allBooks = await res.json();
   renderBooks();
 }
+
+
 
 // Render Books
 function renderBooks() {
@@ -106,7 +108,7 @@ function renderBooks() {
           <span>Genre: ${book.genre}</span><br>
           <span>Published: ${book.publishedYear || 'N/A'}</span><br>
           <span>Rating: ${'★'.repeat(Math.min(book.rating || 0, 5))}${'☆'.repeat(Math.max(0, 5 - (book.rating || 0)))}</span><br>
-          <span>Status: <span class="${book.read ? 'text-green-400' : 'text-red-400'}">${book.read ? 'Read' : 'Unread'}</span></span><br>
+          <span>Status: <span class="${book.read ? 'text-green-400' : 'text-red-400'}">${book.read ? 'Read' : 'Unread'}</span></span><br />
           ${book.purchaseLink ? `<a href="${book.purchaseLink}" target="_blank" class="text-blue-300 underline mt-2 inline-block">Buy this book</a>` : ''}<br />
           ${book.readOnlineLink ? `<a href="${book.readOnlineLink}" target="_blank" class="text-blue-300 underline mt-2 inline-block">Read Online</a>` : ''}
           <div class="mt-2 flex gap-2 flex-wrap">
@@ -118,7 +120,7 @@ function renderBooks() {
             <button onclick='openEditModal(${JSON.stringify(book).replace(/"/g, "&quot;")})' class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition">Edit</button>
             <button onclick='openDeleteModal(${JSON.stringify(book).replace(/"/g, "&quot;")})' class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition">Delete</button>
           </div>
-          <button onclick="toggleReadStatus('${book._id}')" class="mt-2 bg-black text-white px-3 py-1 rounded hover:bg-gray-800 transition">ChangeRead Status</button>
+          <button onclick="toggleReadStatus('${book._id}')" class="mt-2 bg-black text-white px-3 py-1 rounded hover:bg-gray-800 transition">Change Read Status</button>
         </div>
         <div class="md:w-1/2 w-full bg-white/10 p-3 rounded text-sm text-white border border-white/20">
           <h3 class="font-semibold">Summary:</h3>
@@ -209,6 +211,7 @@ document.getElementById('confirm-delete').addEventListener('click', async () => 
   deleteModal.style.display = 'none';
   await loadBooks();
 });
+
 
 // Sort and Range Listeners
 document.getElementById('sort').addEventListener('change', renderBooks);
