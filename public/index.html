@@ -6,8 +6,8 @@
   <title>Book List API</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-white">
-  <main class="max-w-4xl mx-auto py-10 px-4">
+<body class="bg-cover bg-center min-h-screen text-white" style="background-image: url('./assets/images/library.jpg')">
+  <main class="bg-black/60 min-h-screen px-6 py-10 flex flex-col justify-between">
 
     <!-- Header -->
     <header class="text-center mb-10">
@@ -18,6 +18,7 @@
     <!-- Controls -->
     <section class="mb-10">
       <div class="flex flex-wrap gap-4 justify-center mb-6">
+        <button id="open-add-modal" class="bg-white text-black font-semibold px-6 py-2 rounded hover:bg-gray-200 transition">Add Book</button>
         <button id="view-book-list" class="bg-white text-black font-semibold px-6 py-2 rounded hover:bg-gray-200 transition">View Book List</button>
       </div>
 
@@ -46,28 +47,62 @@
       </div>
     </section>
 
-    <!-- Book Form -->
-    <section id="book-form-section" class="mb-10 hidden">
-      <h2 class="text-2xl font-semibold mb-4">➕ Add a New Book</h2>
-      <form id="book-form" class="grid md:grid-cols-2 gap-6">
-        <input type="text" name="title" placeholder="Title" required class="p-2 rounded text-black" />
-        <input type="text" name="author" placeholder="Author" required class="p-2 rounded text-black" />
-        <input type="text" name="genre" placeholder="Genre" class="p-2 rounded text-black" />
-        <input type="number" name="publishedYear" placeholder="Published Year" class="p-2 rounded text-black" />
-        <input type="url" name="coverImageUrl" placeholder="Cover Image URL" class="p-2 rounded text-black" />
-        <input type="url" name="purchaseLink" placeholder="Purchase Link (optional)" class="p-2 rounded text-black" />
-        <label class="md:col-span-2 flex items-center gap-2">
-          <input type="checkbox" name="read" /> Mark as Read
-        </label>
-        <button type="submit" class="md:col-span-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">Add Book</button>
-      </form>
-    </section>
-
     <!-- Book List -->
     <section id="book-list-section" class="mb-10 hidden">
       <h2 class="text-2xl font-semibold mb-4">📖 Your Books</h2>
       <ul id="book-list" class="space-y-6"></ul>
     </section>
+
+    <!-- Add Book Modal -->
+    <div id="add-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
+      <div class="bg-white text-black rounded-lg p-6 w-full max-w-xl shadow-lg relative">
+        <button id="close-add-modal" class="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black">&times;</button>
+        <h2 class="text-2xl font-semibold mb-4">➕ Add a New Book</h2>
+        <form id="add-book-form" class="grid md:grid-cols-2 gap-4">
+          <input type="text" name="title" placeholder="Title" required class="p-2 rounded border" />
+          <input type="text" name="author" placeholder="Author" required class="p-2 rounded border" />
+          <input type="text" name="genre" placeholder="Genre" class="p-2 rounded border" />
+          <input type="number" name="publishedYear" placeholder="Published Year" class="p-2 rounded border" />
+          <input type="url" name="coverImageUrl" placeholder="Cover Image URL" class="p-2 rounded border" />
+          <input type="url" name="purchaseLink" placeholder="Purchase Link (optional)" class="p-2 rounded border" />
+          <label class="md:col-span-2 flex items-center gap-2">
+            <input type="checkbox" name="read" /> Mark as Read
+          </label>
+          <button type="submit" class="md:col-span-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Add Book</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Edit Book Modal -->
+    <div id="edit-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
+      <div class="bg-white text-black rounded-lg p-6 w-full max-w-xl shadow-lg relative">
+        <button id="close-edit-modal" class="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black">&times;</button>
+        <h2 class="text-2xl font-semibold mb-4">📝 Edit Book</h2>
+        <form id="edit-book-form" class="grid md:grid-cols-2 gap-4">
+          <input type="hidden" name="id" />
+          <input type="text" name="title" placeholder="Title" required class="p-2 rounded border" />
+          <input type="text" name="author" placeholder="Author" required class="p-2 rounded border" />
+          <input type="text" name="genre" placeholder="Genre" class="p-2 rounded border" />
+          <input type="number" name="publishedYear" placeholder="Published Year" class="p-2 rounded border" />
+          <input type="url" name="coverImageUrl" placeholder="Cover Image URL" class="p-2 rounded border" />
+          <input type="url" name="purchaseLink" placeholder="Purchase Link (optional)" class="p-2 rounded border" />
+          <label class="md:col-span-2 flex items-center gap-2">
+            <input type="checkbox" name="read" /> Mark as Read
+          </label>
+          <button type="submit" class="md:col-span-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Update Book</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Delete Book Modal -->
+    <div id="delete-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
+      <div class="bg-white text-black rounded-lg p-6 w-full max-w-md shadow-lg relative text-center">
+        <button id="close-delete-modal" class="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black">&times;</button>
+        <h2 class="text-2xl font-semibold mb-4">🗑️ Delete Book</h2>
+        <p class="mb-6">Are you sure you want to delete <strong id="delete-title"></strong>?</p>
+        <button id="confirm-delete" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Yes, Delete</button>
+      </div>
+    </div>
 
     <!-- Footer -->
     <footer class="text-center text-sm text-white/70 mt-auto">
@@ -77,6 +112,9 @@
   <script src="index.js"></script>
 </body>
 </html>
+
+
+
 
 
 
