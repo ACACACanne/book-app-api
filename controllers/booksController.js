@@ -69,15 +69,15 @@ exports.getBooksByRating = async (req, res) => {
 };
 
 exports.addBook = async (req, res) => {
-  const newBook = new Book(req.body);
-  newBook.wishlist = false; // Default wishlist status
   try {
+    const newBook = new Book(req.body);
     const savedBook = await newBook.save();
     res.status(201).json(savedBook);
   } catch (error) {
     res.status(500).send('Internal Server Error');
   }
-};
+};  
+
 
 exports.updateBook = async (req, res) => {
   try {
