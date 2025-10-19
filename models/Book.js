@@ -8,7 +8,8 @@ const bookSchema = new mongoose.Schema({
   rating: { type: Number, min: 0, max: 5, default: 0 },
   read: { type: Boolean, default: false },
   coverImageUrl: { type: String, default: '' },
-  purchaseLink: { type: String, default: '' }
+  purchaseLink: { type: String, default: '' },
+  readOnlineLink: { type: String, default: '' }
 });
 
 module.exports = mongoose.model('Book', bookSchema);

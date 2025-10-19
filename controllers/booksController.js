@@ -99,7 +99,7 @@ exports.deleteBook = async (req, res) => {
 exports.updateBookRating = async (req, res) => {
   const { rating } = req.body;
 
-  // ✅ Add validation here
+  //  Add validation for rating
   if (rating < 0 || rating > 5) {
     return res.status(400).send('Rating must be between 0 and 5');
   }
