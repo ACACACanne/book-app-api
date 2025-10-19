@@ -1,4 +1,3 @@
-index.html:
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,11 +5,10 @@ index.html:
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Book List API</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="index.css" />
 </head>
-<body class="bg-cover bg-center min-h-screen" style="background-image: url('./assets/images/library.jpg')">
-  <main class="bg-black/60 min-h-screen px-6 py-10 flex flex-col justify-between">
-    
+<body class="bg-gray-900 text-white">
+  <main class="max-w-4xl mx-auto py-10 px-4">
+
     <!-- Header -->
     <header class="text-center mb-10">
       <h1 class="text-4xl font-bold mb-2">📚 My Book List</h1>
@@ -18,22 +16,19 @@ index.html:
     </header>
 
     <!-- Controls -->
-    <section class="bg-white/10 p-6 rounded-lg border border-double-white/20 mb-10">
+    <section class="mb-10">
       <div class="flex flex-wrap gap-4 justify-center mb-6">
-        <button class="bg-[#f5f0e6] text-black font-semibold px-6 py-2 rounded hover:bg-[#eae4d8] transition">Add Book</button>
-        <button class="bg-[#f5f0e6] text-black font-semibold px-6 py-2 rounded hover:bg-[#eae4d8] transition">Edit Book</button>
-        <button class="bg-[#f5f0e6] text-black font-semibold px-6 py-2 rounded hover:bg-[#eae4d8] transition">Delete Book</button>
-        <a href="/api/books" class="bg-[#f5f0e6] text-black font-semibold px-6 py-2 rounded hover:bg-[#eae4d8] transition">View Book List</a>
+        <button id="view-book-list" class="bg-white text-black font-semibold px-6 py-2 rounded hover:bg-gray-200 transition">View Book List</button>
       </div>
 
-      <div class="grid md:grid-cols-2 gap-6">
+      <div id="controls" class="grid md:grid-cols-2 gap-6 hidden">
         <div>
           <label for="range" class="block text-white font-medium mb-2">Number of Books to Display: <span id="range-value" class="font-bold">20</span></label>
           <input type="range" id="range" name="range" min="1" max="100" value="20" class="w-full">
         </div>
         <div>
           <label for="sort" class="block text-white font-medium mb-2">Sort Books</label>
-          <select id="sort" name="sort" class="w-full p-2 rounded border border-double-gray-300 text-black">
+          <select id="sort" name="sort" class="w-full p-2 rounded border text-black">
             <option value="title-asc">Title (A-Z)</option>
             <option value="title-desc">Title (Z-A)</option>
             <option value="author-asc">Author (A-Z)</option>
@@ -45,19 +40,33 @@ index.html:
             <option value="read-status">Read Status</option>
             <option value="unread-status">Unread Status</option>
             <option value="genre-asc">Genre (A-Z)</option>
-            <option value="genre-desc">Genre (Z-A)</option> 
+            <option value="genre-desc">Genre (Z-A)</option>
           </select>
         </div>
       </div>
     </section>
 
+    <!-- Book Form -->
+    <section id="book-form-section" class="mb-10 hidden">
+      <h2 class="text-2xl font-semibold mb-4">➕ Add a New Book</h2>
+      <form id="book-form" class="grid md:grid-cols-2 gap-6">
+        <input type="text" name="title" placeholder="Title" required class="p-2 rounded text-black" />
+        <input type="text" name="author" placeholder="Author" required class="p-2 rounded text-black" />
+        <input type="text" name="genre" placeholder="Genre" class="p-2 rounded text-black" />
+        <input type="number" name="publishedYear" placeholder="Published Year" class="p-2 rounded text-black" />
+        <input type="url" name="coverImageUrl" placeholder="Cover Image URL" class="p-2 rounded text-black" />
+        <input type="url" name="purchaseLink" placeholder="Purchase Link (optional)" class="p-2 rounded text-black" />
+        <label class="md:col-span-2 flex items-center gap-2">
+          <input type="checkbox" name="read" /> Mark as Read
+        </label>
+        <button type="submit" class="md:col-span-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">Add Book</button>
+      </form>
+    </section>
+
     <!-- Book List -->
-    <section class="bg-white/10 p-6 rounded-lg border border-double-white/20 mb-10 overflow-y-auto max-h-64">
+    <section id="book-list-section" class="mb-10 hidden">
       <h2 class="text-2xl font-semibold mb-4">📖 Your Books</h2>
-      <ul id="book-form" class="space-y-2">
-        <!-- Dynamic book items will go here -->
-        <li class="bg-white/20 p-3 rounded">Example Book: <span class="italic">Author Name</span></li>
-      </ul>
+      <ul id="book-list" class="space-y-6"></ul>
     </section>
 
     <!-- Footer -->
@@ -65,10 +74,11 @@ index.html:
       &copy; 2025 My Book List API. All rights reserved.
     </footer>
   </main>
+  <script src="index.js"></script>
 </body>
-<script src="index.js"></script>
-
 </html>
+
+
 
 
 
