@@ -36,6 +36,7 @@ document.getElementById('add-book-form').addEventListener('submit', async (e) =>
     rating: parseInt(form.rating.value),
     coverImageUrl: form.coverImageUrl.value,
     purchaseLink: form.purchaseLink.value,
+    readOnlineUrl: form.readOnlineUrl.value,
     read: form.read.checked
   };
 
@@ -105,7 +106,8 @@ function renderBooks() {
           <span>Published: ${book.publishedYear || 'N/A'}</span><br>
           <span>Rating: ${'★'.repeat(Math.min(book.rating || 0, 5))}${'☆'.repeat(Math.max(0, 5 - (book.rating || 0)))}</span><br>
           <span>Status: <span class="${book.read ? 'text-green-400' : 'text-red-400'}">${book.read ? 'Read' : 'Unread'}</span></span><br>
-          ${book.purchaseLink ? `<a href="${book.purchaseLink}" target="_blank" class="text-blue-300 underline mt-2 inline-block">Buy this book</a>` : ''}
+          ${book.purchaseLink ? `<a href="${book.purchaseLink}" target="_blank" class="text-blue-300 underline mt-2 inline-block">Buy this book</a>` : ''}<br />
+          ${book.readOnlineLink ? `<a href="${book.readOnlineLink}" target="_blank" class="text-blue-300 underline mt-2 inline-block">Read Online</a>` : ''}
           <div class="mt-2 flex gap-2 flex-wrap">
             ${[1,2,3,4,5].map(r => `
               <button onclick="updateRating('${book._id}', ${r})" class="text-yellow-400 hover:scale-105 transition">
@@ -151,6 +153,7 @@ function openEditModal(book) {
   form.publishedYear.value = book.publishedYear || '';
   form.coverImageUrl.value = book.coverImageUrl || '';
   form.purchaseLink.value = book.purchaseLink || '';
+  form.readOnlineLink.value = book.readOnlineLink || '';
   form.read.checked = book.read;
   editModal.style.display = 'flex';
 }
@@ -174,6 +177,7 @@ document.getElementById('edit-book-form').addEventListener('submit', async (e) =
     publishedYear: parseInt(form.publishedYear.value),
     coverImageUrl: form.coverImageUrl.value,
     purchaseLink: form.purchaseLink.value,
+    readOnlineLink: form.readOnlineLink.value,
     read: form.read.checked
   };
 
@@ -187,7 +191,7 @@ document.getElementById('edit-book-form').addEventListener('submit', async (e) =
   await loadBooks();
 });
 
-// 🗑️ Confirm Delete
+// Confirm Delete
 document.getElementById('confirm-delete').addEventListener('click', async () => {
   await fetch(`/api/books/${currentDeleteId}`, {
     method: 'DELETE'
@@ -197,7 +201,7 @@ document.getElementById('confirm-delete').addEventListener('click', async () => 
   await loadBooks();
 });
 
-// 🎛️ Sort and Range Listeners
+// Sort and Range Listeners
 document.getElementById('sort').addEventListener('change', renderBooks);
 document.getElementById('range').addEventListener('input', renderBooks);
 

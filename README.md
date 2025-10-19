@@ -16,6 +16,8 @@ Features
 - Sort by title, author, genre, year, rating, and status
 - Responsive UI with Tailwind CSS
 - Background image and themed styling
+- Link to purchase 
+- Link to read Online
 
 ----------------------------------------------------------------------------------------
 
