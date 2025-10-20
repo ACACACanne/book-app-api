@@ -46,7 +46,7 @@
         </div>
       </div>
     </section>
-
+    
     <!-- Book List -->
     <section id="book-list-section" class="mb-10 hidden">
       <h2 class="text-2xl font-semibold mb-4">📖 Your Books</h2>
@@ -75,6 +75,43 @@
       </div>
     </div>
 
+    <!-- Edit Book Modal -->
+    <div id="edit-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
+      <div class="bg-white text-black rounded-lg p-6 w-full max-w-xl shadow-lg relative">
+        <button id="close-edit-modal" class="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black">&times;</button>
+        <h2 class="text-2xl font-semibold mb-4">✏️ Edit Book</h2>
+        <form id="edit-book-form" class="grid md:grid-cols-2 gap-4">
+          <input type="hidden" name="id" />
+          <input type="text" name="title" placeholder="Title" required class="p-2 rounded border" />
+          <input type="text" name="author" placeholder="Author" required class="p-2 rounded border" />
+          <input type="text" name="genre" placeholder="Genre" class="p-2 rounded border" />
+          <input type="number" name="publishedYear" placeholder="Published Year" class="p-2 rounded border" />
+          <input type="url" name="coverImageUrl" placeholder="Cover Image URL" class="p-2 rounded border" />
+          <input type="url" name="purchaseLink" placeholder="Purchase Link" class="p-2 rounded border" />
+          <input type="url" name="readOnlineLink" placeholder="Read Online URL" class="p-2 rounded border" />
+          <input type="number" name="rating" placeholder="Rating (0–5)" class="p-2 rounded border" />
+          <input type="text" name="summary" placeholder="Summary" class="p-2 rounded border md:col-span-2" />
+          <label class="md:col-span-2 flex items-center gap-2">
+            <input type="checkbox" name="read" /> Mark as Read
+          </label>
+          <button type="submit" class="md:col-span-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Save Changes</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Delete Book Modal -->
+    <div id="delete-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
+      <div class="bg-white text-black rounded-lg p-6 w-full max-w-xl shadow-lg relative">
+        <button id="close-delete-modal" class="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black">&times;</button>
+        <h2 class="text-2xl font-semibold mb-4">🗑️ Delete Book</h2>
+        <p>Are you sure you want to delete the book "<span id="delete-title"></span>"?</p>
+        <div class="mt-4 flex gap-4 justify-end">
+          <button id="confirm-delete" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Delete</button>
+          <button id="cancel-delete" class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 transition">Cancel</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Footer -->
     <footer class="text-center text-sm text-white/70 mt-auto">
       &copy; 2025 My Book List API. All rights reserved.
@@ -83,4 +120,5 @@
   <script src="index.js"></script>
 </body>
 </html>
+
 
