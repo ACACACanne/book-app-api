@@ -16,10 +16,13 @@ document.getElementById('open-add-modal').addEventListener('click', () => {
 document.getElementById('close-add-modal').addEventListener('click', () => {
   addModal.classList.add('hidden');
 });
-document.getElementById('close-edit-modal')?.addEventListener('click', () => {
+document.getElementById('close-edit-modal').addEventListener('click', () => {
   editModal.classList.add('hidden');
 });
-document.getElementById('close-delete-modal')?.addEventListener('click', () => {
+document.getElementById('close-delete-modal').addEventListener('click', () => {
+  deleteModal.classList.add('hidden');
+});
+document.getElementById('cancel-delete').addEventListener('click', () => {
   deleteModal.classList.add('hidden');
 });
 
@@ -48,11 +51,16 @@ document.getElementById('add-book-form').addEventListener('submit', async (e) =>
     summary: form.summary.value
   };
 
-  await fetch('/api/books', {
+   const res = await fetch('/api/books', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(book)
   });
+  const newBook = await res.json();
+  allBooks.push(newBook); // Add to local list
+  renderBooks(); // Re-render immediately
+
+
 
   form.reset();
   addModal.classList.add('hidden');
@@ -196,7 +204,7 @@ document.getElementById('edit-book-form')?.addEventListener('submit', async (e) 
     body: JSON.stringify(updatedBook)
   });
 
-  editModal.classList.add('hidden');
+  editModal.style.display = 'none';
   await loadBooks();
 });
 
@@ -206,7 +214,7 @@ document.getElementById('confirm-delete')?.addEventListener('click', async () =>
     method: 'DELETE'
   });
 
-  deleteModal.classList.add('hidden');
+  deleteModal.style.display = 'none';
   await loadBooks();
 });
 
@@ -214,3 +222,5 @@ document.getElementById('confirm-delete')?.addEventListener('click', async () =>
 document.getElementById('sort').addEventListener('change', renderBooks);
 document.getElementById('range').addEventListener('input', renderBooks);
 
+// Initial Load
+loadBooks();
