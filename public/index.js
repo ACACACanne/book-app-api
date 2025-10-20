@@ -203,8 +203,8 @@ document.getElementById('edit-book-form')?.addEventListener('submit', async (e) 
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(updatedBook)
   });
-
-  editModal.style.display = 'none';
+  currentEditId = null;
+  editModal.classList.add('hidden');
   await loadBooks();
 });
 
@@ -213,8 +213,8 @@ document.getElementById('confirm-delete')?.addEventListener('click', async () =>
   await fetch(`/api/books/${currentDeleteId}`, {
     method: 'DELETE'
   });
-
-  deleteModal.style.display = 'none';
+  currentDeleteId = null;
+  deleteModal.classList.add('hidden');
   await loadBooks();
 });
 
