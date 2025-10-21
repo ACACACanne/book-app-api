@@ -1,124 +1,436 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Book List API</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-cover bg-center min-h-screen text-white" style="background-image: url('./assets/images/library.jpg')">
-  <main class="bg-black/60 min-h-screen px-6 py-10 flex flex-col justify-between">
-
-    <!-- Header -->
-    <header class="text-center mb-10">
-      <h1 class="text-4xl font-bold mb-2">📚 My Book List</h1>
-      <p class="text-lg text-white">Manage your personal library. Add, edit, and explore your books with ease.</p>
-    </header>
-
-    <!-- Controls -->
-    <section class="mb-10">
-      <div class="flex flex-wrap gap-4 justify-center mb-6">
-        <button id="open-add-modal" class="bg-white text-black font-semibold px-6 py-2 rounded hover:bg-gray-200 transition">Add Book</button>
-        <button id="view-book-list" class="bg-white text-black font-semibold px-6 py-2 rounded hover:bg-gray-200 transition">View Book List</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book List API</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="bg-cover bg-center min-h-screen text-white"
+    style="background-image: url('./assets/images/library.jpg')"
+  >
+    <main
+      class="bg-black/60 min-h-screen px-6 py-10 flex flex-col justify-between"
+    >
+      <!-- Auth Buttons Top-Right -->
+      <div class="absolute top-4 right-6 z-50 flex gap-4" id="auth-buttons">
+        <button
+          id="open-login-modal"
+          class="bg-white text-black font-semibold px-4 py-2 rounded hover:bg-gray-200 transition"
+        >
+          Login
+        </button>
+        <button
+          id="open-register-modal"
+          class="bg-white text-black font-semibold px-4 py-2 rounded hover:bg-gray-200 transition"
+        >
+          Register
+        </button>
+        <button
+          id="logout-btn"
+          class="bg-gray-300 text-black font-semibold px-4 py-2 rounded hover:bg-gray-400 transition hidden"
+        >
+          Logout
+        </button>
       </div>
 
-      <div id="controls" class="grid md:grid-cols-2 gap-6 hidden">
-        <div>
-          <label for="range" class="block text-white font-medium mb-2">Number of Books to Display: <span id="range-value" class="font-bold">20</span></label>
-          <input type="range" id="range" name="range" min="1" max="300" value="20" class="w-full">
-        </div>
-        <div>
-          <label for="sort" class="block text-white font-medium mb-2">Sort Books</label>
-          <select id="sort" name="sort" class="w-full p-2 rounded border text-black">
-            <option value="title-asc">Title (A-Z)</option>
-            <option value="title-desc">Title (Z-A)</option>
-            <option value="author-asc">Author (A-Z)</option>
-            <option value="author-desc">Author (Z-A)</option>
-            <option value="year-asc">Published Year (Oldest to Newest)</option>
-            <option value="year-desc">Published Year (Newest to Oldest)</option>
-            <option value="rating-asc">Rating (Lowest to Highest)</option>
-            <option value="rating-desc">Rating (Highest to Lowest)</option>
-            <option value="read-status">Read Status</option>
-            <option value="unread-status">Unread Status</option>
-            <option value="genre-asc">Genre (A-Z)</option>
-            <option value="genre-desc">Genre (Z-A)</option>
-          </select>
-        </div>
-      </div>
-    </section>
-    
-    <!-- Book List -->
-    <section id="book-list-section" class="mb-10 hidden">
-      <h2 class="text-2xl font-semibold mb-4">📖 Your Books</h2>
-      <ul id="book-list" class="space-y-6"></ul>
-    </section>
+      <!-- User Info -->
+      <div id="user-info" class="text-right text-sm text-white/70 mb-4"></div>
 
-    <!-- Add Book Modal -->
-    <div id="add-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
-      <div class="bg-white text-black rounded-lg p-6 w-full max-w-xl shadow-lg relative">
-        <button id="close-add-modal" class="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black">&times;</button>
-        <h2 class="text-2xl font-semibold mb-4">➕ Add a New Book</h2>
-        <form id="add-book-form" class="grid md:grid-cols-2 gap-4">
-          <input type="text" name="title" placeholder="Title" required class="p-2 rounded border" />
-          <input type="text" name="author" placeholder="Author" required class="p-2 rounded border" />
-          <input type="text" name="genre" placeholder="Genre" class="p-2 rounded border" />
-          <input type="number" name="publishedYear" placeholder="Published Year" class="p-2 rounded border" />
-          <input type="url" name="coverImageUrl" placeholder="Cover Image URL" class="p-2 rounded border" />
-          <input type="url" name="purchaseLink" placeholder="Purchase Link (optional)" class="p-2 rounded border" />
-          <input type="url" name="readOnlineLink" placeholder="Read Online URL (optional)" class="p-2 rounded border" />
-          <input type="text" name="summary" placeholder="Summary (optional)" class="p-2 rounded border md:col-span-2" />
-          <label class="md:col-span-2 flex items-center gap-2">
-            <input type="checkbox" name="read" /> Mark as Read
-          </label>
-          <button type="submit" class="md:col-span-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Add Book</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Edit Book Modal -->
-    <div id="edit-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
-      <div class="bg-white text-black rounded-lg p-6 w-full max-w-xl shadow-lg relative">
-        <button id="close-edit-modal" class="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black">&times;</button>
-        <h2 class="text-2xl font-semibold mb-4">✏️ Edit Book</h2>
-        <form id="edit-book-form" class="grid md:grid-cols-2 gap-4">
-          <input type="hidden" name="id" />
-          <input type="text" name="title" placeholder="Title" required class="p-2 rounded border" />
-          <input type="text" name="author" placeholder="Author" required class="p-2 rounded border" />
-          <input type="text" name="genre" placeholder="Genre" class="p-2 rounded border" />
-          <input type="number" name="publishedYear" placeholder="Published Year" class="p-2 rounded border" />
-          <input type="url" name="coverImageUrl" placeholder="Cover Image URL" class="p-2 rounded border" />
-          <input type="url" name="purchaseLink" placeholder="Purchase Link" class="p-2 rounded border" />
-          <input type="url" name="readOnlineLink" placeholder="Read Online URL" class="p-2 rounded border" />
-          <input type="number" name="rating" placeholder="Rating (0–5)" class="p-2 rounded border" />
-          <input type="text" name="summary" placeholder="Summary" class="p-2 rounded border md:col-span-2" />
-          <label class="md:col-span-2 flex items-center gap-2">
-            <input type="checkbox" name="read" /> Mark as Read
-          </label>
-          <button type="submit" class="md:col-span-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Save Changes</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Delete Book Modal -->
-    <div id="delete-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
-      <div class="bg-white text-black rounded-lg p-6 w-full max-w-xl shadow-lg relative">
-        <button id="close-delete-modal" class="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black">&times;</button>
-        <h2 class="text-2xl font-semibold mb-4">🗑️ Delete Book</h2>
-        <p>Are you sure you want to delete the book "<span id="delete-title"></span>"?</p>
-        <div class="mt-4 flex gap-4 justify-end">
-          <button id="confirm-delete" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Delete</button>
-          <button id="cancel-delete" class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 transition">Cancel</button>
+      <!-- Login Modal -->
+      <div
+        id="login-modal"
+        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden"
+      >
+        <div
+          class="bg-white text-black rounded-lg p-6 w-full max-w-md shadow-lg relative"
+        >
+          <button
+            id="close-login-modal"
+            class="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black"
+          >
+            &times;
+          </button>
+          <h2 class="text-2xl font-semibold mb-4">🔐 Login</h2>
+          <form id="login-form" class="space-y-4">
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              required
+              class="w-full p-2 rounded border"
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+              class="w-full p-2 rounded border"
+            />
+            <button
+              type="submit"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full"
+            >
+              Login
+            </button>
+          </form>
         </div>
       </div>
-    </div>
 
-    <!-- Footer -->
-    <footer class="text-center text-sm text-white/70 mt-auto">
-      &copy; 2025 My Book List API. All rights reserved.
-    </footer>
-  </main>
-  <script src="index.js"></script>
-</body>
+      <!-- Register Modal -->
+      <div
+        id="register-modal"
+        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden"
+      >
+        <div
+          class="bg-white text-black rounded-lg p-6 w-full max-w-md shadow-lg relative"
+        >
+          <button
+            id="close-register-modal"
+            class="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black"
+          >
+            &times;
+          </button>
+          <h2 class="text-2xl font-semibold mb-4">📝 Register</h2>
+          <form id="register-form" class="space-y-4">
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              required
+              class="w-full p-2 rounded border"
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              required
+              class="w-full p-2 rounded border"
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+              class="w-full p-2 rounded border"
+            />
+            <button
+              type="submit"
+              class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-full"
+            >
+              Register
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Header -->
+      <header class="text-center mb-10">
+        <h1 class="text-4xl font-bold mb-2">📚 My Personal Library</h1>
+        <p class="text-lg text-white">
+          Manage your library. Add, edit books with your personal touch, or
+          explore our public collection with ease.
+        </p>
+      </header>
+
+      <!-- Controls -->
+      <section class="mb-10">
+        <div class="flex flex-wrap gap-4 justify-center mb-6">
+          <button
+            id="open-add-modal"
+            class="bg-white text-black font-semibold px-6 py-2 rounded hover:bg-gray-200 transition"
+          >
+            Add Book
+          </button>
+          <div class="flex gap-4 mb-4">
+            <button
+              id="view-public"
+              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Public Library
+            </button>
+            <button
+              id="view-personal"
+              class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+            >
+              My Books
+            </button>
+          </div>
+        </div>
+         <button id="view-pending" class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">Pending Books</button>
+
+
+        <div id="controls" class="grid md:grid-cols-2 gap-6 hidden">
+          <div>
+            <label for="range" class="block text-white font-medium mb-2">
+              Number of Books to Display:
+              <span id="range-value" class="font-bold">20</span>
+            </label>
+            <input
+              type="range"
+              id="range"
+              name="range"
+              min="1"
+              max="300"
+              value="20"
+              class="w-full"
+            />
+          </div>
+          <div>
+            <label for="sort" class="block text-white font-medium mb-2">
+              Sort Books
+            </label>
+            <select
+              id="sort"
+              name="sort"
+              class="w-full p-2 rounded border text-black"
+            >
+              <option value="title-asc">Title (A-Z)</option>
+              <option value="title-desc">Title (Z-A)</option>
+              <option value="author-asc">Author (A-Z)</option>
+              <option value="author-desc">Author (Z-A)</option>
+              <option value="year-asc">
+                Published Year (Oldest to Newest)
+              </option>
+              <option value="year-desc">
+                Published Year (Newest to Oldest)
+              </option>
+              <option value="rating-asc">Rating (Lowest to Highest)</option>
+              <option value="rating-desc">Rating (Highest to Lowest)</option>
+              <option value="read-status">Read Status</option>
+              <option value="unread-status">Unread Status</option>
+              <option value="genre-asc">Genre (A-Z)</option>
+              <option value="genre-desc">Genre (Z-A)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Book List -->
+      <section id="book-list-section" class="mb-10 hidden">
+        <h2 class="text-2xl font-semibold mb-4">📖 Your Books</h2>
+        <ul id="book-list" class="space-y-6"></ul>
+      </section>
+
+      <!-- Add Book Modal -->
+      <div
+        id="add-modal"
+        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden"
+      >
+        <div
+          class="bg-white text-black rounded-lg p-6 w-full max-w-xl shadow-lg relative"
+        >
+          <button
+            id="close-add-modal"
+            class="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black"
+          >
+            &times;
+          </button>
+          <h2 class="text-2xl font-semibold mb-4">➕ Add a New Book</h2>
+          <form id="add-book-form" class="grid md:grid-cols-2 gap-4">
+            <input
+              type="text"
+              name="title"
+              placeholder="Title"
+              required
+              class="p-2 rounded border"
+            />
+            <input
+              type="text"
+              name="author"
+              placeholder="Author"
+              required
+              class="p-2 rounded border"
+            />
+            <input
+              type="text"
+              name="genre"
+              placeholder="Genre"
+              class="p-2 rounded border"
+            />
+            <input
+              type="number"
+              name="publishedYear"
+              placeholder="Published Year"
+              class="p-2 rounded border"
+            />
+            <input
+              type="url"
+              name="coverImageUrl"
+              placeholder="Cover Image URL"
+              class="p-2 rounded border"
+            />
+            <input
+              type="url"
+              name="purchaseLink"
+              placeholder="Purchase Link (optional)"
+              class="p-2 rounded border"
+            />
+            <input
+              type="url"
+              name="readOnlineLink"
+              placeholder="Read Online URL (optional)"
+              class="p-2 rounded border"
+            />
+            <input
+              type="text"
+              name="summary"
+              placeholder="Summary (optional)"
+              class="p-2 rounded border md:col-span-2"
+            />
+            <label class="md:col-span-2 flex items-center gap-2">
+              <input type="checkbox" name="read" /> Mark as Read
+            </label>
+            <label class="flex items-center gap-2 mt-2">
+              <input type="checkbox" id="public-checkbox" class="accent-green-600" />
+              <span class="text-black">Make this book public</span>
+            </label>
+
+
+            <button
+              type="submit"
+              class="md:col-span-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+            >
+              Add Book
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Edit Book Modal -->
+      <div
+        id="edit-modal"
+        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden"
+      >
+        <div
+          class="bg-white text-black rounded-lg p-6 w-full max-w-xl shadow-lg relative"
+        >
+          <button
+            id="close-edit-modal"
+            class="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black"
+          >
+            &times;
+          </button>
+          <h2 class="text-2xl font-semibold mb-4">✏️ Edit Book</h2>
+          <form id="edit-book-form" class="grid md:grid-cols-2 gap-4">
+            <input type="hidden" name="id" />
+            <input
+              type="text"
+              name="title"
+              placeholder="Title"
+              required
+              class="p-2 rounded border"
+            />
+            <input
+              type="text"
+              name="author"
+              placeholder="Author"
+              required
+              class="p-2 rounded border"
+            />
+            <input
+              type="text"
+              name="genre"
+              placeholder="Genre"
+              class="p-2 rounded border"
+            />
+            <input
+              type="number"
+              name="publishedYear"
+              placeholder="Published Year"
+              class="p-2 rounded border"
+            />
+            <input
+              type="url"
+              name="coverImageUrl"
+              placeholder="Cover Image URL"
+              class="p-2 rounded border"
+            />
+            <input
+              type="url"
+              name="purchaseLink"
+              placeholder="Purchase Link"
+              class="p-2 rounded border"
+            />
+            <input
+              type="url"
+              name="readOnlineLink"
+              placeholder="Read Online URL"
+              class="p-2 rounded border"
+            />
+            <input
+              type="number"
+              name="rating"
+              placeholder="Rating (0–5)"
+              class="p-2 rounded border"
+            />
+            <input
+              type="text"
+              name="summary"
+              placeholder="Summary"
+              class="p-2 rounded border md:col-span-2"
+            />
+            <label class="md:col-span-2 flex items-center gap-2">
+              <input type="checkbox" name="read" /> Mark as Read
+            </label>
+            <button
+              type="submit"
+              class="md:col-span-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+            >
+              Save Changes
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Delete Book Modal -->
+      <div
+        id="delete-modal"
+        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden"
+      >
+        <div
+          class="bg-white text-black rounded-lg p-6 w-full max-w-xl shadow-lg relative"
+        >
+          <button
+            id="close-delete-modal"
+            class="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black"
+          >
+            &times;
+          </button>
+          <h2 class="text-2xl font-semibold mb-4">🗑️ Delete Book</h2>
+          <p>
+            Are you sure you want to delete the book "<span
+              id="delete-title"
+            ></span
+            >"?
+          </p>
+          <div class="mt-4 flex gap-4 justify-end">
+            <button
+              id="confirm-delete"
+              class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+            >
+              Delete
+            </button>
+            <button
+              id="cancel-delete"
+              class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 transition"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="summary-panel" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-black/80 text-white px-4 py-2 rounded shadow hidden z-50">
+  <span id="summary-text"></span>
+</div>
+
+
+      <!-- Footer -->
+      <footer class="text-center text-sm text-white/70 mt-auto">
+        &copy; 2025 My Book List API. All rights reserved.
+      </footer>
+    </main>
+    <script src="/index.js" defer></script>
+  </body>
 </html>
-
-
