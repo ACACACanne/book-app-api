@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Book = require('../models/book');
+const Book = require('../schema/bookSchema');
 const { authenticateUser, requireAdmin } = require('../middleware');
 
 // GET Public Books
@@ -37,6 +37,8 @@ router.post('/', authenticateUser, async (req, res) => {
     res.status(400).json({ message: 'Error adding book' });
   }
 });
+
+
 
 // PUT Edit Book
 router.put('/:id', authenticateUser, async (req, res) => {

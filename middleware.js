@@ -1,4 +1,4 @@
-const User = require('./models/user');
+const User = require('./schema/userSchema');
 const token = 'admin-token'; 
 
 async function authenticateUser(req, res, next) {

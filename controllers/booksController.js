@@ -1,4 +1,4 @@
-const Book = require('../models/book');
+const Book = require('../schema/bookSchema');
 
 // Public books (approved by admin)
 async function getPublicBooks(req, res) {
