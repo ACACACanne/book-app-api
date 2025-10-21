@@ -29,8 +29,6 @@ async function authenticateUser(req, res, next) {
   return next();
 }
 
-
-
     // Client token lookup
     const user = await User.findOne({ 'tokens.token': token });
     if (!user) {
