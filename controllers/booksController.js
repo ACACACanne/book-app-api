@@ -1,135 +1,165 @@
-const Book = require('../models/Book');
+const Book = require('../models/book');
 
-exports.getAllBooks = async (req, res) => {
+// Public books (approved by admin)
+async function getPublicBooks(req, res) {
   try {
-    const books = await Book.find();
+    const books = await Book.find({ public: true, approved: true });
     res.json(books);
-  } catch (error) {
-    res.status(500).send('Internal Server Error');
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching public books' });
   }
-};
+}
 
-exports.getBookById = async (req, res) => {
+// Personal books (owned by user)
+async function getUserBooks(req, res) {
+  try {
+    const books = await Book.find({ userId: req.user._id });
+    res.json(books);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching user books' });
+  }
+}
+
+// View specific book (if public or owned)
+async function getBookById(req, res) {
   try {
     const book = await Book.findById(req.params.id);
-    book ? res.json(book) : res.status(404).send('Book not found');
-  } catch (error) {
-    res.status(500).send('Internal Server Error');
-  }
-};
+    if (!book) return res.status(404).json({ message: 'Book not found' });
 
-exports.getBooksByAuthor = async (req, res) => {
+    const isOwner = book.userId?.equals(req.user._id);
+    const isPublic = book.public && book.approved;
+
+    if (!isOwner && !isPublic && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    res.json(book);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching book' });
+  }
+}
+
+// Add book (starts private)
+async function addBook(req, res) {
   try {
-    const author = req.params.author.toLowerCase();
-    const filtered = await Book.find({ author }).exec();
-    res.json(filtered);
-  } catch (error) {
-    res.status(500).send('Internal Server Error');
+    const newBook = new Book({
+      ...req.body,
+      userId: req.user._id,
+      public: false,
+      approved: false
+    });
+    await newBook.save();
+    res.status(201).json({ message: 'Book submitted for review', book: newBook });
+  } catch (err) {
+    res.status(500).json({ message: 'Error adding book' });
   }
-};
+}
 
-exports.getBooksByTitle = async (req, res) => {
-  try {
-    const title = req.params.title.toLowerCase();
-    const filtered = await Book.find({ title: { $regex: title, $options: 'i' } }).exec();
-    res.json(filtered);
-  } catch (error) {
-    res.status(500).send('Internal Server Error');
-  }
-};
-
-exports.getBooksByGenre = async (req, res) => {
-  try {
-    const genre = req.params.genre.toLowerCase();
-    const filtered = await Book.find({ genre }).exec();
-    res.json(filtered);
-  } catch (error) {
-    res.status(500).send('Internal Server Error');
-  }
-};
-
-exports.getBooksByPublishedYear = async (req, res) => {
-  try {
-    const year = parseInt(req.params.year);
-    const filtered = await Book.find({ publishedYear: year }).exec();
-    res.json(filtered);
-  } catch (error) {
-    res.status(500).send('Internal Server Error');
-  }
-};
-
-exports.getBooksByRating = async (req, res) => {
-  try {
-    const rating = parseFloat(req.params.rating);
-    const filtered = await Book.find({ rating }).exec();
-    res.json(filtered);
-  } catch (error) {
-    res.status(500).send('Internal Server Error');
-  }
-};
-
-exports.addBook = async (req, res) => {
-  try {
-    const newBook = new Book(req.body);
-    const savedBook = await newBook.save();
-    res.status(201).json(savedBook);
-  } catch (error) {
-    res.status(500).send('Internal Server Error');
-  }
-};  
-
-
-exports.updateBook = async (req, res) => {
-  try {
-    const updatedBook = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    updatedBook ? res.json(updatedBook) : res.status(404).send('Book not found');
-  } catch (error) {
-    res.status(500).send('Internal Server Error');
-  }
-};
-
-exports.deleteBook = async (req, res) => {
-  try {
-    const deletedBook = await Book.findByIdAndDelete(req.params.id);
-    deletedBook ? res.status(204).send() : res.status(404).send('Book not found');
-  } catch (error) {
-    res.status(500).send('Internal Server Error');
-  }
-};
-
-exports.updateBookRating = async (req, res) => {
-  const { rating } = req.body;
-
-  //  Add validation for rating
-  if (rating < 0 || rating > 5) {
-    return res.status(400).send('Rating must be between 0 and 5');
-  }
-
-  try {
-    const updatedBook = await Book.findByIdAndUpdate(
-      req.params.id,
-      { rating },
-      { new: true }
-    );
-    updatedBook
-      ? res.json(updatedBook)
-      : res.status(404).send('Book not found');
-  } catch (error) {
-    res.status(500).send('Internal Server Error');
-  }
-};
-
-exports.updateBookReadStatus = async (req, res) => {
+// Admin approves book
+async function approveBook(req, res) {
   try {
     const book = await Book.findById(req.params.id);
-    if (!book) return res.status(404).send('Book not found');
+    if (!book) return res.status(404).json({ message: 'Book not found' });
+
+    book.public = true;
+    book.approved = true;
+    await book.save();
+
+    res.json({ message: 'Book approved for public listing', book });
+  } catch (err) {
+    res.status(500).json({ message: 'Error approving book' });
+  }
+}
+
+// Admin updates public book
+async function updateBook(req, res) {
+  try {
+    const book = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!book) return res.status(404).json({ message: 'Book not found' });
+
+    res.json({ message: 'Book updated', book });
+  } catch (err) {
+    res.status(500).json({ message: 'Error updating book' });
+  }
+}
+
+// Admin deletes public book
+async function deleteBook(req, res) {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (!book) return res.status(404).json({ message: 'Book not found' });
+
+    await book.deleteOne();
+    res.json({ message: 'Book deleted' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error deleting book' });
+  }
+}
+
+// User deletes their own private book
+async function deletePrivateBook(req, res) {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (!book) return res.status(404).json({ message: 'Book not found' });
+
+    if (!book.userId.equals(req.user._id)) {
+      return res.status(403).json({ message: 'You can only delete your own books' });
+    }
+
+    if (book.public) {
+      return res.status(403).json({ message: 'Cannot delete public books' });
+    }
+
+    await book.deleteOne();
+    res.json({ message: 'Private book deleted' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error deleting private book' });
+  }
+}
+
+// Update rating
+async function updateBookRating(req, res) {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (!book) return res.status(404).json({ message: 'Book not found' });
+
+    book.rating = Math.max(0, Math.min(req.body.rating, 5));
+    await book.save();
+
+    res.json({ message: 'Rating updated', rating: book.rating });
+  } catch (err) {
+    res.status(500).json({ message: 'Error updating rating' });
+  }
+}
+
+// Toggle read status
+async function updateBookReadStatus(req, res) {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (!book) return res.status(404).json({ message: 'Book not found' });
+
     book.read = !book.read;
     await book.save();
-    res.json(book);
-  } catch (error) {
-    res.status(500).send('Internal Server Error');
+
+    res.json({ message: 'Read status updated', read: book.read });
+  } catch (err) {
+    res.status(500).json({ message: 'Error updating read status' });
   }
+}
+
+module.exports = {
+  getPublicBooks,
+  getUserBooks,
+  getBookById,
+  addBook,
+  approveBook,
+  updateBook,
+  deleteBook,
+  deletePrivateBook,
+  updateBookRating,
+  updateBookReadStatus
 };
+
 
 
 
